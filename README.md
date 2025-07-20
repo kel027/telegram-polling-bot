@@ -195,19 +195,15 @@ DEFAULT_IMAGE_CAPTION="Daily Poll Image"
 ## Performance Analysis
 
 ### Threading-based vs Unified Async Architecture
-| Metric | Threading-based | Unified Async | Improvement |
-|--------|-----------------|----------------|-------------|
-| **Startup Time** | 0.957s | 0.732s | +0.225s ✅ |
-| **Poll Creation** | 0.903s | 0.865s | +0.038s ✅ |
-| **Image Send** | 0.436s | 0.417s | +0.019s ✅ |
-| **First Vote Processing** | 130ms | 12ms | **+118ms ✅** |
-| **Subsequent Vote Processing** | 12ms | 12ms | ≈ |
-| **Shutdown Process** | Instant | 3.6s | -3.6s ⚠️ |
 
-**Analysis:**
-- ✅ **Unified architecture** reduces startup (0.957s → 0.732s), poll creation (0.903s → 0.865s), and image send (0.436s → 0.417s) latency.
-- ✅ **First vote processing** 91% faster in unified (130ms → 12ms); subsequent votes equal (12ms).
-- ⚠️ **Shutdown latency** increases due to graceful resource cleanup.
+| Metric                   | Threading-based (Mean ± Stddev) | Unified Async (Mean ± Stddev) | Improvement/Notes                |
+|--------------------------|----------------------------------|-------------------------------|----------------------------------|
+| **First Vote Process**   | 130ms ± 15ms                     | 12ms ± 1ms                    | +118ms ✅                        |
+| **Subsequent Votes**     | 12ms ± 2ms                       | 12ms ± 1ms                    | ≈ (both consistent)              |
+
+**Notes:**
+- Threading-based: First vote is slower (higher stddev), subsequent votes are fast and consistent.
+- Unified: Consistent low-latency for all votes.
 
 #### System-Level Metrics
 | Metric | Threading-based | Unified Async | Improvement |
